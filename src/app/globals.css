@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.slick-slide>div {
+    margin: 0 10px;
+}
+
+.rotate-icon:hover {
+    animation: spin 2s infinite linear;
+}
+
+.item-select+.item-select {
+    border-top-width: 1px;
+    border-color: #ddd;
+    border-style: dashed;
+}
+
+.item-select>.menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+}
+
+.item-select:hover>.menu {
+    display: block;
+}
+
+.cart-border+.cart-border {
+    border-left: 1px #ebebeb solid;
+}
+
+.ant-select-selector {
+    padding: 20px 16px !important;
+}
+
+.chartContainer {
+    width: 300px;
+    height: 300px;
+    position: relative;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

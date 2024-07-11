@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Space } from 'antd'
 import TableProduct from '@/templates/Dashboard/ProductPage/TableProduct'
 import ModalCreateProduct from '@/templates/Dashboard/ProductPage/ModalCreateProduct'
@@ -8,6 +8,8 @@ import ModalCreateProduct from '@/templates/Dashboard/ProductPage/ModalCreatePro
 import { Plus } from '@phosphor-icons/react'
 
 const ProductPage = () => {
+  const [showCreateProduct, setShowCreateProduct] = useState(false)
+  const [countProduct, setCountProduct] = useState(0)
   return (
     <>
       <Space
@@ -19,20 +21,24 @@ const ProductPage = () => {
           <div className='font-semibold text-3xl'>
             Danh sách sản phẩm
           </div>
-          <span className='border px-3 py-1 rounded-full'>400</span>
+          <span className='border px-3 py-1 rounded-full'>{countProduct}</span>
         </div>
         <div>
           <Button
             className='flex items-center gap-2 bg-white'
             size='large'
+            onClick={() => setShowCreateProduct(true)}
           >
             <Plus size={18} />
             <span>Tạo sản phẩm</span>
           </Button>
         </div>
-        <TableProduct />
+        <TableProduct refreshData={showCreateProduct} setCountProduct={setCountProduct}/>
       </Space>
-      {/* <ModalCreateProduct /> */}
+      <ModalCreateProduct
+        isOpen={showCreateProduct}
+        handleClose={() => setShowCreateProduct(false)}
+      />
     </>
   )
 }

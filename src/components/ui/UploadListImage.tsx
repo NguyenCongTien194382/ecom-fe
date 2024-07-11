@@ -2,15 +2,17 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Image, Upload } from 'antd';
+import { Image, Upload, message } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 
 import { UploadSimple } from '@phosphor-icons/react';
+import axios from 'axios';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 interface Props {
     label?: string;
+    onChange?: any;
 }
 
 const getBase64 = (file: FileType): Promise<string> =>
@@ -21,7 +23,7 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-const UploadListImage: React.FC<Props> = ({ label }) => {
+const UploadListImage: React.FC<Props> = ({ label, onChange }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -35,8 +37,29 @@ const UploadListImage: React.FC<Props> = ({ label }) => {
         setPreviewOpen(true);
     };
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
+        if (onChange) {
+            onChange(newFileList);
+        }
+    };
+
+    const handleUpload = async ({ file, onSuccess, onError }: any) => {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const response = await axios.post('http://localhost:9000/api/product/upload-image', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            onSuccess(response.data.data.images[0]);
+        } catch (error) {
+            onError(error);
+            message.error('Upload failed');
+        }
+    };
 
     return (
         <>
@@ -44,6 +67,7 @@ const UploadListImage: React.FC<Props> = ({ label }) => {
                 <label className='block font-bold mb-1'>{label}</label>
             )}
             <Upload
+                customRequest={handleUpload}
                 fileList={fileList}
                 listType="picture-card"
                 onPreview={handlePreview}
@@ -69,4 +93,4 @@ const UploadListImage: React.FC<Props> = ({ label }) => {
     );
 }
 
-export default UploadListImage
+export default UploadListImage;
